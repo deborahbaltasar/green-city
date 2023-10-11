@@ -2,17 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildingManager : MonoBehaviour
+public class BuildingManager
 {
-    // Start is called before the first frame update
-    void Start()
+    GridStructure grid;
+    PlacementManager placementManager;
+    //Dictionary<Vector3Int, GameObject> structuresToBeModified = new Dictionary<Vector3Int, GameObject>();
+
+    public BuildingManager(int cellSize, int width, int length, PlacementManager placementManager)
     {
-        
+        this.grid = new GridStructure(cellSize, width, length);
+        this.placementManager = placementManager;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void PlaceStructureAt(Vector3 inputPosition)
     {
-        
+        Vector3 gridPosition = grid.CalculateGridPosition(inputPosition);
+        if (grid.IsCellTaken(gridPosition) == false)
+        {
+            placementManager.CreateBuilding(gridPosition, grid);
+
+        }
     }
 }
