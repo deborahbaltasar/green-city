@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerBuildingSingleStructureState : PlayerState
 {
     BuildingManager buildingManager;
+    string structureName;
     public PlayerBuildingSingleStructureState(GameManager gameManager, BuildingManager buildingManager) : base(gameManager)
     {
         this.buildingManager = buildingManager;
@@ -34,6 +35,12 @@ public class PlayerBuildingSingleStructureState : PlayerState
     }
     public override void OnCancle()
     {
-        this.gameManager.TransitionToState(this.gameManager.selectionState);
+        this.gameManager.TransitionToState(this.gameManager.selectionState, null);
+    }
+
+    public override void EnterState(string structureName)
+    {
+        base.EnterState(structureName);
+        this.structureName = structureName;
     }
 }

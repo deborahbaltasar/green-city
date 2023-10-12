@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class PlayerSelectionState : PlayerState
 {
     CameraMovement cameraMovement;
@@ -13,25 +12,9 @@ public class PlayerSelectionState : PlayerState
     {
         cameraMovement.MoveCamera(panPosition);
     }
-
     public override void OnInputPanUp()
     {
         cameraMovement.StopCameraMovement();
-    }
-
-    public override void OnInputPointerChange(Vector3 position)
-    {
-        return;
-    }
-
-    public override void OnInputPointerDown(Vector3 position)
-    {
-        return;
-    }
-
-    public override void OnInputPointerUp()
-    {
-        return;
     }
 
     public override void OnCancle()

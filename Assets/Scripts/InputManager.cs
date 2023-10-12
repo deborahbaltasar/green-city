@@ -10,7 +10,10 @@ public class InputManager : MonoBehaviour, IInputManager
     private Action OnPointerUpHandler;
     private Action<Vector3> OnPointerChangeHandler;
 
-    public LayerMask mouseInputMask;
+    private LayerMask mouseInputMask;
+
+    public LayerMask MouseInputMask { get => mouseInputMask; set => mouseInputMask = value; }
+
     // Update is called once per frame
     void Update()
     {
