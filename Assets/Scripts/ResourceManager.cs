@@ -116,10 +116,7 @@ public class ResourceManager : MonoBehaviour, IResourceManager
         foreach (var structure in buildingManger.GetAllStructures())
         {
             float tempEffect = temperatureManager.CalculateTemperatureEffect(structure);
-            int adjustedIncome = (int)(structure.GetIncome() * tempEffect);
-
-            newTemperature += tempEffect;
-            structure.SetIncome(adjustedIncome);
+            newTemperature += structure.temperatureEffect;
         }
         temperatureManager.SetTemperature(newTemperature);
         if (newTemperature > 50.0f)

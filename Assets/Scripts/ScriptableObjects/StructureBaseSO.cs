@@ -12,6 +12,7 @@ public abstract class StructureBaseSO : ScriptableObject
 
     [SerializeField]
     protected int income;
+    public float temperatureIncomeMultiplier = 1.0f;
     public bool requireRoadAccess;
     public bool requireWater;
     public bool requirePower;
@@ -36,12 +37,7 @@ public abstract class StructureBaseSO : ScriptableObject
 
     public virtual int GetIncome()
     {
-        return income;
-    }
-
-    public virtual void SetIncome(int newIncome)
-    {
-        income = newIncome;
+        return (int)(income * temperatureIncomeMultiplier);
     }
 
     public bool HasPower()
