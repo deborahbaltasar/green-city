@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c170683446810c47bfd93820d712cda, type: 3}
   m_Name: ResidentialZone
   m_EditorClassIdentifier: 
-  buildingName: Residential Area
+  buildingName: Casa
   prefab: {fileID: 8033323200218459389, guid: 190271b57943f7f4db9c39b8b015e331, type: 3}
   placementCost: 10
   upkeepCost: 0

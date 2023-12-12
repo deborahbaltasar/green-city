@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdc45f24efc78d249b109c18daae9a63, type: 3}
   m_Name: PowerPlant
   m_EditorClassIdentifier: 
-  buildingName: Power plant
+  buildingName: "Usina E\xF3lica"
   prefab: {fileID: 1874159045682050738, guid: dd1a6dc5c298f884590bc21cbf736ea9, type: 3}
   placementCost: 2000
   upkeepCost: 0
