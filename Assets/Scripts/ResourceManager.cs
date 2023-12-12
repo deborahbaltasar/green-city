@@ -5,21 +5,22 @@ using UnityEngine;
 
 public class ResourceManager : MonoBehaviour
 {
-    public int startMoneyAmout = 5000;
+    public int startMoneyAmount = 5000;
     public float moneyCalculationInterval = 2;
     MoneyHelper moneyHelper;
     public BuildingManager buildingManager;
     public UIController uiController;
+
     // Start is called before the first frame update
     void Start()
     {
-        moneyHelper = new MoneyHelper(startMoneyAmout);
+        moneyHelper = new MoneyHelper(startMoneyAmount);
         UpdateMoneyValueUI();
     }
 
     public bool SpendMoney(int amount)
     {
-        if(CanIBuyIt(amount))
+        if (CanIBuyIt(amount))
         {
             try
             {
@@ -40,9 +41,9 @@ public class ResourceManager : MonoBehaviour
         Debug.Log("End the game");
     }
 
-    private bool CanIBuyIt(int amount)
+    public bool CanIBuyIt(int amount)
     {
-        if(moneyHelper.Money >= amount)
+        if (moneyHelper.Money >= amount)
         {
             return true;
         }
@@ -74,8 +75,5 @@ public class ResourceManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    void Update() { }
 }

@@ -7,12 +7,27 @@ public class BuildingManager
 {
     GridStructure grid;
     PlacementManager placementManager;
+    StructureRepository structureRepository;
+    StructureModificationHelper helper;
+
     //Dictionary<Vector3Int, GameObject> structuresToBeModified = new Dictionary<Vector3Int, GameObject>();
 
-    public BuildingManager(int cellSize, int width, int length, PlacementManager placementManager)
+    public BuildingManager(
+        int cellSize,
+        int width,
+        int length,
+        PlacementManager placementManager,
+        ResourceManager resourceManager
+    )
     {
         this.grid = new GridStructure(cellSize, width, length);
         this.placementManager = placementManager;
+        StructureModificationFactory.PrepareFactory(
+            structureRepository,
+            grid,
+            placementManager,
+            resourceManager
+        );
     }
 
     public void PlaceStructureAt(Vector3 inputPosition)
@@ -21,7 +36,6 @@ public class BuildingManager
         if (grid.IsCellTaken(gridPosition) == false)
         {
             placementManager.CreateBuilding(gridPosition, grid);
-
         }
     }
 
@@ -34,8 +48,8 @@ public class BuildingManager
         }
     }
 
-    internal IEnumerable<StructureBaseSO> GetAllStructures()
+    public IEnumerable<StructureBaseSO> GetAllStructures()
     {
-        throw new NotImplementedException();
+        return grid.GetAllStructures();
     }
 }

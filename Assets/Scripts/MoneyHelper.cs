@@ -6,34 +6,37 @@ using UnityEngine;
 public class MoneyHelper
 {
     private int money;
-    public MoneyHelper(int startMoneyAmout)
+
+    public MoneyHelper(int startMoneyAmount)
     {
-        this.money = startMoneyAmout;
+        money = startMoneyAmount;
     }
 
-    public int Money { get => money; 
-        private set 
-        { 
-            if(value < 0)
+    public int Money
+    {
+        get => money;
+        private set
+        {
+            if (value < 0)
             {
                 money = 0;
                 throw new MoneyException("Not enough money");
             }
             else
             {
-                money = value; 
+                money = value;
             }
-        } 
+        }
     }
 
-    public void ReduceMoney(int amout)
+    public void ReduceMoney(int amount)
     {
-        Money -= amout;
+        Money -= amount;
     }
 
-    public void AddMoney(int amout)
+    public void AddMoney(int amount)
     {
-        Money += amout;
+        Money += amount;
     }
 
     public void CalculateMoney(IEnumerable<StructureBaseSO> buildings)
@@ -46,7 +49,7 @@ public class MoneyHelper
     {
         foreach (var structure in buildings)
         {
-            Money -= structure.upkeepCost;
+            ReduceMoney(structure.upkeepCost);
         }
     }
 
@@ -54,8 +57,7 @@ public class MoneyHelper
     {
         foreach (var structure in buildings)
         {
-            Money += structure.GetIncome();
+            AddMoney(structure.GetIncome());
         }
     }
 }
-    

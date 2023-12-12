@@ -65,4 +65,21 @@ public class GridStructure
         var cellIndex = CalculateGridIndex(gridPosition);
         return grid[cellIndex.y, cellIndex.x].GetStructure();
     }
+
+    public IEnumerable<StructureBaseSO> GetAllStructures()
+    {
+        List<StructureBaseSO> structureDataList = new List<StructureBaseSO>();
+        for (int row = 0; row < grid.GetLength(0); row++)
+        {
+            for (int col = 0; col < grid.GetLength(1); col++)
+            {
+                var data = grid[row, col].GetStructure();
+                if (data != null)
+                {
+                    structureDataList.Add(data.GetComponent<Structure>().structureData);
+                }
+            }
+        }
+
+        return structureDataList;
 }
