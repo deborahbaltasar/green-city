@@ -13,7 +13,7 @@ public static class StructureModificationFactory
         StructureRepository structureRepository,
         GridStructure grid,
         IPlacementManager placementManager,
-        ResourceManager resourceManager
+        IResourceManager resourceManager
     )
     {
         singleStructurePlacementHelper = new SingleStructurePlacementHelper(

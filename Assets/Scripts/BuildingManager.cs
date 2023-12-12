@@ -17,7 +17,7 @@ public class BuildingManager
         int width,
         int length,
         PlacementManager placementManager,
-        ResourceManager resourceManager
+        IResourceManager resourceManager
     )
     {
         this.grid = new GridStructure(cellSize, width, length);

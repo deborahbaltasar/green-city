@@ -35,4 +35,13 @@ public class SingleStructurePlacementHelper : StructureModificationHelper
             }
         }
     }
+
+    public override void CancelModifications()
+    {
+        foreach (var structure in structuresToBeModified)
+        {
+            resourceManager.AddMoney(structureData.placementCost);
+        }
+        base.CancelModifications();
+    }
 }

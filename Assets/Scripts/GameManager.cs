@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour
             placementManager,
             resourceManager
         );
+        resourceManager.PrepareResourceManager(buildingManager);
         selectionState = new PlayerSelectionState(this, cameraMovement);
         demolishState = new PlayerRemoveBuildingState(this, buildingManager);
         buildingSingleStructureState = new PlayerBuildingSingleStructureState(

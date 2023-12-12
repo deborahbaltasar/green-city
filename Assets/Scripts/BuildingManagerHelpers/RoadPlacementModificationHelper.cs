@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ZonePlacementHelper : StructureModificationHelper
+public class RoadPlacementModificationHelper : StructureModificationHelper
 {
-    public ZonePlacementHelper(
+    public RoadPlacementModificationHelper(
         StructureRepository structureRepository,
         GridStructure grid,
         IPlacementManager placementManager,
-        ResourceManager resourceManager
+        IResourceManager resourceManager
     )
         : base(structureRepository, grid, placementManager, resourceManager) { }
 }
