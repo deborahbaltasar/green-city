@@ -7,8 +7,7 @@ public class PlacementManager : MonoBehaviour, IPlacementManager
 {
     public Transform ground;
     public Material transparentMaterial;
-    private Dictionary<GameObject, Material[]> originalMaterials =
-        new Dictionary<GameObject, Material[]>();
+    private Dictionary<GameObject, Material[]> originalMaterials = new Dictionary<GameObject, Material[]>();
 
     //public void CreateBuilding(Vector3 gridPosition, GridStructure grid, GameObject buildingPrefab)
     //{
@@ -16,33 +15,17 @@ public class PlacementManager : MonoBehaviour, IPlacementManager
     //    grid.PlaceStructureOnTheGrid(newStructure, gridPosition);
     //}
 
-    public GameObject CreateGhostStructure(
-        Vector3 gridPosition,
-        GameObject buildingPrefab,
-        RotationValue rotationValue = RotationValue.R0
-    )
+    public GameObject CreateGhostStructure(Vector3 gridPosition, GameObject buildingPrefab, RotationValue rotationValue = RotationValue.R0)
     {
-        GameObject newStructure = PlaceStructureOnTheMap(
-            gridPosition,
-            buildingPrefab,
-            rotationValue
-        );
+        GameObject newStructure = PlaceStructureOnTheMap(gridPosition, buildingPrefab, rotationValue);
         Color colorToSet = Color.green;
         ModifyStructurePrefabLook(newStructure, colorToSet);
         return newStructure;
     }
 
-    public GameObject PlaceStructureOnTheMap(
-        Vector3 gridPosition,
-        GameObject buildingPrefab,
-        RotationValue rotationValue
-    )
+    public GameObject PlaceStructureOnTheMap(Vector3 gridPosition, GameObject buildingPrefab, RotationValue rotationValue)
     {
-        GameObject newStructure = Instantiate(
-            buildingPrefab,
-            ground.position + gridPosition,
-            Quaternion.identity
-        );
+        GameObject newStructure = Instantiate(buildingPrefab, ground.position + gridPosition, Quaternion.identity);
         Vector3 rotation = Vector3.zero;
         switch (rotationValue)
         {
@@ -91,7 +74,9 @@ public class PlacementManager : MonoBehaviour, IPlacementManager
     {
         foreach (var structure in structureCollection)
         {
+
             ResetBuildingLook(structure);
+
         }
         originalMaterials.Clear();
     }
@@ -128,20 +113,13 @@ public class PlacementManager : MonoBehaviour, IPlacementManager
         ModifyStructurePrefabLook(structureToDemolish, colorToSet);
     }
 
-    public GameObject MoveStructureOnTheMap(
-        Vector3Int positionToPlaceStructure,
-        GameObject gameObjectToReuse,
-        GameObject prefab
-    )
+    public GameObject MoveStructureOnTheMap(Vector3Int positionToPlaceStructure, GameObject gameObjectToReuse, GameObject prefab)
     {
         gameObjectToReuse.transform.position = positionToPlaceStructure;
         gameObjectToReuse.transform.rotation = prefab.transform.rotation;
         for (int i = 0; i < gameObjectToReuse.transform.childCount; i++)
         {
-            gameObjectToReuse.transform.GetChild(i).rotation = prefab
-                .transform
-                .GetChild(i)
-                .rotation;
+            gameObjectToReuse.transform.GetChild(i).rotation = prefab.transform.GetChild(i).rotation;
         }
         return gameObjectToReuse;
     }

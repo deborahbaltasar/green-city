@@ -10,24 +10,13 @@ public class BuildingManager
     StructureRepository structureRepository;
     StructureModificationHelper helper;
 
-    public BuildingManager(
-        int cellSize,
-        int width,
-        int length,
-        IPlacementManager placementManager,
-        StructureRepository structureRepository,
-        IResourceManager resourceManager
-    )
+    public BuildingManager(int cellSize, int width, int length, IPlacementManager placementManager, StructureRepository structureRepository, IResourceManager resourceManager)
     {
         this.grid = new GridStructure(cellSize, width, length);
         this.placementManager = placementManager;
         this.structureRepository = structureRepository;
-        StructureModificationFactory.PrepareFactory(
-            structureRepository,
-            grid,
-            placementManager,
-            resourceManager
-        );
+        StructureModificationFactory.PrepareFactory(structureRepository, grid, placementManager, resourceManager);
+
     }
 
     public void PrepareBuildingManager(Type classType)
@@ -35,13 +24,9 @@ public class BuildingManager
         helper = StructureModificationFactory.GetHelper(classType);
     }
 
-    public void PrepareStructureForPlacement(
-        Vector3 inputPosition,
-        string structureName,
-        StructureType structureType
-    )
+    public void PrepareStructureForModification(Vector3 inputPosition, string structureName, StructureType structureType)
     {
-        helper.PrepareStructureForModification(inputPosition, structureName, structureType);
+        helper.PrepareStructureForPlacement(inputPosition, structureName, structureType);
     }
 
     public void ConfirmModification()
@@ -61,7 +46,7 @@ public class BuildingManager
 
     public void PrepareStructureForDemolitionAt(Vector3 inputPosition)
     {
-        helper.PrepareStructureForModification(inputPosition, "", StructureType.None);
+        helper.PrepareStructureForPlacement(inputPosition, "", StructureType.None);
     }
 
     public GameObject CheckForStructureInGrid(Vector3 inputPosition)
@@ -98,21 +83,8 @@ public class BuildingManager
         if (grid.IsCellTaken(gridPosition))
         {
             return grid.GetStructureDataFromTheGrid(inputPosition);
+
         }
         return null;
-    }
-
-    internal void RemoveBuildingAt(Vector3 position)
-    {
-        Vector3 gridPosition = grid.CalculateGridPosition(position);
-        if (grid.IsCellTaken(gridPosition))
-        {
-            grid.RemoveStructureFromTheGrid(gridPosition);
-        }
-    }
-
-    internal void PlaceStructureAt(Vector3 position)
-    {
-        throw new NotImplementedException();
     }
 }
