@@ -7,5 +7,6 @@ public interface IResourceManager
     void AddMoney(int amount);
     void CalculateTownIncome();
     bool CanIBuyIt(int amount);
+    int HowManyStructuresCanIPlace(int placementCost, int count);
     bool SpendMoney(int amount);
 }

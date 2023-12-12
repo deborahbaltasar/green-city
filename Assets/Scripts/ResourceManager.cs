@@ -106,4 +106,10 @@ public class ResourceManager : MonoBehaviour, IResourceManager
 
     // Update is called once per frame
     void Update() { }
+
+    public int HowManyStructuresCanIPlace(int placementCost, int numberOfStructures)
+    {
+        int amount = moneyHelper.Money / placementCost;
+        return amount < numberOfStructures ? amount : numberOfStructures;
+    }
 }

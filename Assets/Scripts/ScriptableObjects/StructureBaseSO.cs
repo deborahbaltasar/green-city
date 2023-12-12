@@ -9,8 +9,9 @@ public abstract class StructureBaseSO : ScriptableObject
     public GameObject prefab;
     public int placementCost;
     public int upkeepCost;
+
     [SerializeField]
-    private int income;
+    protected int income;
 
     public virtual int GetIncome()
     {

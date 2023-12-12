@@ -23,5 +23,46 @@ public class StructureModificationHelper
         this.grid = grid;
         this.placementManager = placementManager;
         this.resourceManager = resourceManager;
+        structureData = ScriptableObject.CreateInstance<NullStructureSO>();
+    }
+
+    public GameObject AccessStructureInDictionary(Vector3Int gridPosition)
+    {
+        var gridPositionInt = Vector3Int.FloorToInt(gridPosition);
+        if (structuresToBeModified.ContainsKey(gridPositionInt))
+        {
+            return structuresToBeModified[gridPositionInt];
+        }
+        return null;
+    }
+
+    public virtual void CancelModifications()
+    {
+        placementManager.DestroyStructures(structuresToBeModified.Values);
+        ResetHelpersData();
+    }
+
+    public virtual void PrepareStructureForModification(
+        Vector3 inputPosititon,
+        string structureName,
+        StructureType structureType
+    )
+    {
+        if (
+            structureData.GetType() == typeof(NullStructureSO)
+            && structureType != StructureType.None
+        )
+        {
+            structureData = structureRepository.GetStructureByNameAndType(
+                structureName,
+                structureType
+            );
+        }
+    }
+
+    private void ResetHelpersData()
+    {
+        structuresToBeModified.Clear();
+        structureData = ScriptableObject.CreateInstance<NullStructureSO>();
     }
 }
