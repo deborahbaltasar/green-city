@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,40 +7,32 @@ public class ResourceManager : MonoBehaviour, IResourceManager
 {
     [SerializeField]
     private int startMoneyAmount = 5000;
-
-    [SerializeField]
-    private float moneyCalculationInterval = 2;
-
     [SerializeField]
     private int demolitionPrice = 20;
+    [SerializeField]
+    private float moneyCalculationInterval = 2;
     MoneyHelper moneyHelper;
-    private BuildingManager buildingManager;
-    public UIController uiController;
+    PopulationHelper populationHelper;
+    private BuildingManager buildingManger;
+    public UiController uiController;
 
-    public int StartMoneyAmount
-    {
-        get => startMoneyAmount;
-    }
-    public float MoneyCalculationInterval
-    {
-        get => moneyCalculationInterval;
-    }
-    public int DemolitionPrice
-    {
-        get => demolitionPrice;
-    }
+    public int StartMoneyAmount { get => startMoneyAmount;}
+    public float MoneyCalculationInterval { get => moneyCalculationInterval;}
+
+    public int DemolitionPrice => demolitionPrice;
 
     // Start is called before the first frame update
     void Start()
     {
         moneyHelper = new MoneyHelper(startMoneyAmount);
-        UpdateMoneyValueUI();
+        populationHelper = new PopulationHelper();
+        UpdateUI();
     }
 
     public void PrepareResourceManager(BuildingManager buildingManager)
     {
-        this.buildingManager = buildingManager;
-        InvokeRepeating("CalculateTownIncome", 0, moneyCalculationInterval);
+        this.buildingManger = buildingManager;
+        InvokeRepeating("CalculateTownIncome",0,MoneyCalculationInterval);
     }
 
     public bool SpendMoney(int amount)
@@ -50,11 +42,12 @@ public class ResourceManager : MonoBehaviour, IResourceManager
             try
             {
                 moneyHelper.ReduceMoney(amount);
-                UpdateMoneyValueUI();
+                UpdateUI();
                 return true;
             }
             catch (MoneyException)
             {
+
                 ReloadGame();
             }
         }
@@ -68,19 +61,15 @@ public class ResourceManager : MonoBehaviour, IResourceManager
 
     public bool CanIBuyIt(int amount)
     {
-        if (moneyHelper.Money >= amount)
-        {
-            return true;
-        }
-        return false;
+        return moneyHelper.Money >= amount;
     }
 
     public void CalculateTownIncome()
     {
         try
         {
-            moneyHelper.CalculateMoney(buildingManager.GetAllStructures());
-            UpdateMoneyValueUI();
+            moneyHelper.CalculateMoney(buildingManger.GetAllStructures());
+            UpdateUI();
         }
         catch (MoneyException)
         {
@@ -90,26 +79,43 @@ public class ResourceManager : MonoBehaviour, IResourceManager
 
     private void OnDisable()
     {
-        CancelInvoke();
+        CancelInvoke();  
     }
 
     public void AddMoney(int amount)
     {
         moneyHelper.AddMoney(amount);
-        UpdateMoneyValueUI();
+        UpdateUI();
     }
 
-    private void UpdateMoneyValueUI()
+    private void UpdateUI()
     {
         uiController.SetMoneyValue(moneyHelper.Money);
+        uiController.SetPopulationValue(populationHelper.Population);
     }
 
     // Update is called once per frame
-    void Update() { }
+    void Update()
+    {
+
+    }
 
     public int HowManyStructuresCanIPlace(int placementCost, int numberOfStructures)
     {
-        int amount = moneyHelper.Money / placementCost;
-        return amount < numberOfStructures ? amount : numberOfStructures;
+        int amount = (int)(moneyHelper.Money / placementCost);
+        return amount > numberOfStructures ? numberOfStructures : amount;
+    }
+
+    public void AddToPopulation(int value)
+    {
+        populationHelper.AddToPopulation(value);
+        UpdateUI();
+    }
+
+    public void ReducePopulation(int value)
+    {
+        populationHelper.ReducePopulation(value);
+        UpdateUI();
+
     }
 }

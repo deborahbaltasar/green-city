@@ -1,4 +1,6 @@
-using System;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -10,10 +12,9 @@ public class InputManager : MonoBehaviour, IInputManager
     private Action OnPointerUpHandler;
     private Action<Vector3> OnPointerChangeHandler;
 
-    private LayerMask mouseInputMask;
+    public LayerMask mouseInputMask;
 
     public LayerMask MouseInputMask { get => mouseInputMask; set => mouseInputMask = value; }
-
     // Update is called once per frame
     void Update()
     {
@@ -29,7 +30,7 @@ public class InputManager : MonoBehaviour, IInputManager
             CallActionOnPointer((position) => OnPointerDownHandler?.Invoke(position));
 
         }
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             CallActionOnPointer((position) => OnPointerChangeHandler?.Invoke(position));
         }
@@ -76,10 +77,12 @@ public class InputManager : MonoBehaviour, IInputManager
             OnPointerSecondUpHandler?.Invoke();
         }
     }
+
     public void AddListenerOnPointerDownEvent(Action<Vector3> listener)
     {
         OnPointerDownHandler += listener;
     }
+
     public void RemoveListenerOnPointerDownEvent(Action<Vector3> listener)
     {
         OnPointerDownHandler -= listener;
@@ -99,6 +102,7 @@ public class InputManager : MonoBehaviour, IInputManager
     {
         OnPointerSecondUpHandler += listener;
     }
+
     public void RemoveListenerOnPointerSecondUpEvent(Action listener)
     {
         OnPointerSecondUpHandler -= listener;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,101 +6,100 @@ using UnityEngine;
 
 public class ZonePlacementHelper : StructureModificationHelper
 {
-    Vector3 mapBottomLeftCorner;
-    Vector3 startPoint;
-    Vector3? previousEndPosition = null;
+    Vector3 startPosition;
+    Vector3? previousEndPositon = null;
     bool startPositionAcquired = false;
+    Vector3 mapBottomLeftCorner;
     Queue<GameObject> gameObjectsToReuse = new Queue<GameObject>();
     private int structuresOldQuantity = 0;
 
-    public ZonePlacementHelper(
-        StructureRepository structureRepository,
-        GridStructure grid,
-        IPlacementManager placementManager,
-        Vector3 mapBottomLeftCorner,
-        IResourceManager resourceManager
-    )
-        : base(structureRepository, grid, placementManager, resourceManager)
+    public ZonePlacementHelper(StructureRepository structureRepository, GridStructure grid, IPlacementManager placementManager, Vector3 mapBottomLeftCorner, IResourceManager resourceManager) : base(structureRepository, grid, placementManager, resourceManager)
     {
         this.mapBottomLeftCorner = mapBottomLeftCorner;
     }
 
-    public override void PrepareStructureForModification(
-        Vector3 inputPosititon,
-        string structureName,
-        StructureType structureType
-    )
+    public override void PrepareStructureForModification(Vector3 inputPosition, string structureName, StructureType structureType)
     {
-        base.PrepareStructureForModification(inputPosititon, structureName, structureType);
-        Vector3 gridPosition = grid.CalculateGridPosition(inputPosititon);
-        if (startPositionAcquired == false && grid.IsCellTaken(gridPosition) == false)
+        base.PrepareStructureForModification(inputPosition, structureName, structureType);
+        Vector3 gridPositon = grid.CalculateGridPosition(inputPosition);
+        if (startPositionAcquired == false && grid.IsCellTaken(gridPositon) == false)
         {
-            startPoint = gridPosition;
+            startPosition = gridPositon;
             startPositionAcquired = true;
         }
-        else if (startPositionAcquired && (previousEndPosition == null || ZoneCalculator.CheckIfPositionHasChanged(gridPosition, previousEndPosition.Value, grid))
+        if (startPositionAcquired && previousEndPositon == null || ZoneCalculator.CheckIfPositionHasChanged(gridPositon, previousEndPositon.Value, grid))
         {
-            PlaceNewZoneUpToPosition(gridPosition);
+            PlaceNewZoneUpTo(gridPositon);
         }
+
     }
 
-    private void PlaceNewZoneUpToPosition(Vector3 endPoint)
+    private void PlaceNewZoneUpTo(Vector3 endPosition)
     {
-        Vector3Int minPoint = Vector3Int.FloorToInt(startPoint);
-        Vector3Int maxPoint = Vector3Int.FloorToInt(endPoint);
+        Vector3Int minPoint = Vector3Int.FloorToInt(startPosition);
+        Vector3Int maxPoint = Vector3Int.FloorToInt(endPosition);
 
-        ZoneCalculator.PrepareStartAndEndPoints(startPoint, endPoint, ref minPoint, ref maxPoint, mapBottomLeftCorner);
+        ZoneCalculator.PrepareStartAndEndPosition(startPosition, endPosition, ref minPoint, ref maxPoint, mapBottomLeftCorner);
         HashSet<Vector3Int> newPositionsSet = grid.GetAllPositionsFromTo(minPoint, maxPoint);
 
         newPositionsSet = CalculateZoneCost(newPositionsSet);
 
-
-        previousEndPosition = endPoint;
+        previousEndPositon = endPosition;
         ZoneCalculator.CalculateZone(newPositionsSet, structuresToBeModified, gameObjectsToReuse);
 
-        foreach (var positionToPlaceStructure in newPositionsSet) {
+        foreach (var positionToPlaceStructure in newPositionsSet)
+        {
             if (grid.IsCellTaken(positionToPlaceStructure))
-            {
                 continue;
-            }
             GameObject structureToAdd = null;
             if (gameObjectsToReuse.Count > 0)
             {
                 var gameObjectToReuse = gameObjectsToReuse.Dequeue();
                 gameObjectToReuse.SetActive(true);
                 structureToAdd = placementManager.MoveStructureOnTheMap(positionToPlaceStructure, gameObjectToReuse, structureData.prefab);
+
             }
             else
             {
-                structureToAdd = GameObject.Instantiate(structureData.prefab);
+                structureToAdd = placementManager.CreateGhostStructure(positionToPlaceStructure, structureData.prefab);
+
             }
+            structuresToBeModified.Add(positionToPlaceStructure, structureToAdd);
         }
+
 
     }
 
     private HashSet<Vector3Int> CalculateZoneCost(HashSet<Vector3Int> newPositionsSet)
     {
-        resourceManager.AddMoney(structureData.placementCost * structuresOldQuantity);
-        int numberOfZonesToPlace = resourceManager.HowManyStructuresCanIPlace(structureData.placementCost, newPositionsSet.Count);
-        if (numberOfZonesToPlace < newPositionsSet.Count)
+        resourceManager.AddMoney(structuresOldQuantity * structureData.placementCost);
+
+        int numberToPlace = resourceManager.HowManyStructuresCanIPlace(structureData.placementCost, newPositionsSet.Count);
+
+        if (numberToPlace < newPositionsSet.Count)
         {
-            newPositionsSet = new HashSet<Vector3Int>(newPositionsSet.Take(numberOfZonesToPlace));
+
+            newPositionsSet = new HashSet<Vector3Int>(newPositionsSet.Take(numberToPlace).ToList());
         }
         structuresOldQuantity = newPositionsSet.Count;
-        resourceManager.SpendMoney(structureData.placementCost * structuresOldQuantity);
-
+        resourceManager.SpendMoney(structuresOldQuantity * structureData.placementCost);
+        Debug.Log(structuresOldQuantity);
         return newPositionsSet;
     }
 
-    public override void CancelModifications()
+    public override void CancleModifications()
     {
-        resourceManager.AddMoney(structureData.placementCost * structuresOldQuantity);
-        base.CancelModifications();
+        resourceManager.AddMoney(structuresOldQuantity * structureData.placementCost);
+        base.CancleModifications();
         ResetZonePlacementHelper();
     }
 
     public override void ConfirmModifications()
     {
+        if (structureData.GetType() == typeof(ZoneStructureSO) && ((ZoneStructureSO)structureData).zoneType == ZoneType.Residential)
+        {
+            resourceManager.AddToPopulation(structuresToBeModified.Count);
+        }
         base.ConfirmModifications();
         ResetZonePlacementHelper();
     }
@@ -110,7 +109,14 @@ public class ZonePlacementHelper : StructureModificationHelper
         structuresOldQuantity = 0;
         placementManager.DestroyStructures(gameObjectsToReuse);
         gameObjectsToReuse.Clear();
-        previousEndPosition = null;
         startPositionAcquired = false;
+        previousEndPositon = null;
     }
+
+    public override void StopContinuousPlacement()
+    {
+        startPositionAcquired = false;
+        base.StopContinuousPlacement();
+    }
+
 }

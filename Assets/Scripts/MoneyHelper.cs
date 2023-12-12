@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,15 +9,13 @@ public class MoneyHelper
 
     public MoneyHelper(int startMoneyAmount)
     {
-        money = startMoneyAmount;
+        this.money = startMoneyAmount;
     }
 
-    public int Money
-    {
-        get => money;
-        private set
-        {
-            if (value < 0)
+    public int Money { get => money; 
+        private set 
+        { 
+            if(value < 0)
             {
                 money = 0;
                 throw new MoneyException("Not enough money");
@@ -26,7 +24,8 @@ public class MoneyHelper
             {
                 money = value;
             }
-        }
+            
+        } 
     }
 
     public void ReduceMoney(int amount)
@@ -49,7 +48,7 @@ public class MoneyHelper
     {
         foreach (var structure in buildings)
         {
-            ReduceMoney(structure.upkeepCost);
+            Money -= structure.upkeepCost;
         }
     }
 
@@ -57,7 +56,7 @@ public class MoneyHelper
     {
         foreach (var structure in buildings)
         {
-            AddMoney(structure.GetIncome());
+            Money += structure.GetIncome();
         }
     }
 }

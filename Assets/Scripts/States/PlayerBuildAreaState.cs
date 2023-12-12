@@ -1,14 +1,14 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerBuildingAreaState : PlayerState
+public class PlayerBuildAreaState : PlayerState
 {
-
+    
     BuildingManager buildingManager;
     string structureName;
 
-    public PlayerBuildingAreaState(GameManager gameManager, BuildingManager buildingManager) : base(gameManager)
+    public PlayerBuildAreaState(GameManager gameManager, BuildingManager buildingManager) : base(gameManager)
     {
         this.buildingManager = buildingManager;
     }

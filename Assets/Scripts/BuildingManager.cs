@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,22 +6,22 @@ using UnityEngine;
 public class BuildingManager
 {
     GridStructure grid;
-    PlacementManager placementManager;
+    IPlacementManager placementManager;
     StructureRepository structureRepository;
     StructureModificationHelper helper;
-
-    //Dictionary<Vector3Int, GameObject> structuresToBeModified = new Dictionary<Vector3Int, GameObject>();
 
     public BuildingManager(
         int cellSize,
         int width,
         int length,
-        PlacementManager placementManager,
+        IPlacementManager placementManager,
+        StructureRepository structureRepository,
         IResourceManager resourceManager
     )
     {
         this.grid = new GridStructure(cellSize, width, length);
         this.placementManager = placementManager;
+        this.structureRepository = structureRepository;
         StructureModificationFactory.PrepareFactory(
             structureRepository,
             grid,
@@ -30,26 +30,89 @@ public class BuildingManager
         );
     }
 
-    public void PlaceStructureAt(Vector3 inputPosition)
+    public void PrepareBuildingManager(Type classType)
     {
-        Vector3 gridPosition = grid.CalculateGridPosition(inputPosition);
-        if (grid.IsCellTaken(gridPosition) == false)
-        {
-            placementManager.CreateBuilding(gridPosition, grid);
-        }
+        helper = StructureModificationFactory.GetHelper(classType);
     }
 
-    public void RemoveBuildingAt(Vector3 inputPosition)
+    public void PrepareStructureForPlacement(
+        Vector3 inputPosition,
+        string structureName,
+        StructureType structureType
+    )
     {
-        Vector3 gridPosition = grid.CalculateGridPosition(inputPosition);
-        if (grid.IsCellTaken(gridPosition))
-        {
-            placementManager.RemoveBuilding(gridPosition, grid);
-        }
+        helper.PrepareStructureForModification(inputPosition, structureName, structureType);
+    }
+
+    public void ConfirmModification()
+    {
+        helper.ConfirmModifications();
     }
 
     public IEnumerable<StructureBaseSO> GetAllStructures()
     {
         return grid.GetAllStructures();
+    }
+
+    public void CancelModification()
+    {
+        helper.CancleModifications();
+    }
+
+    public void PrepareStructureForDemolitionAt(Vector3 inputPosition)
+    {
+        helper.PrepareStructureForModification(inputPosition, "", StructureType.None);
+    }
+
+    public GameObject CheckForStructureInGrid(Vector3 inputPosition)
+    {
+        Vector3 gridPositoion = grid.CalculateGridPosition(inputPosition);
+        if (grid.IsCellTaken(gridPositoion))
+        {
+            return grid.GetStructureFromTheGrid(gridPositoion);
+        }
+        return null;
+    }
+
+    public GameObject CheckForStructureInDictionary(Vector3 inputPosition)
+    {
+        Vector3 gridPosition = grid.CalculateGridPosition(inputPosition);
+        GameObject structureToReturn = null;
+        structureToReturn = helper.AccessStructureInDictionary(gridPosition);
+        if (structureToReturn != null)
+        {
+            return structureToReturn;
+        }
+        structureToReturn = helper.AccessStructureInDictionary(gridPosition);
+        return structureToReturn;
+    }
+
+    public void StopContinuousPlacement()
+    {
+        helper.StopContinuousPlacement();
+    }
+
+    public StructureBaseSO GetStructureDataFromPosition(Vector3 inputPosition)
+    {
+        Vector3 gridPosition = grid.CalculateGridPosition(inputPosition);
+        if (grid.IsCellTaken(gridPosition))
+        {
+            return grid.GetStructureDataFromTheGrid(inputPosition);
+        }
+        return null;
+    }
+
+    internal void RemoveBuildingAt(Vector3 position)
+    {
+        Vector3 gridPosition = grid.CalculateGridPosition(position);
+        if (grid.IsCellTaken(gridPosition))
+        {
+            grid.RemoveStructureFromTheGrid(gridPosition);
+        }
+    }
+
+    internal void PlaceStructureAt(Vector3 position)
+    {
+        throw new NotImplementedException();
     }
 }
