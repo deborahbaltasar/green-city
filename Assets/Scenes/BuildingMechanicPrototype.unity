@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657832, g: 0.4964127, b: 0.57481533, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641275, b: 0.57481486, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2516,6 +2516,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e124772d9a861464d9b127a204043749, type: 3}
+--- !u!114 &807072859 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8893521537920494710, guid: 8bf271c427130b04db81e3cf83cd92c6,
+    type: 3}
+  m_PrefabInstance: {fileID: 1324688206}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &825389473
 GameObject:
   m_ObjectHideFlags: 0
@@ -3130,7 +3142,7 @@ PrefabInstance:
     - target: {fileID: 4520980515991907589, guid: 8bf271c427130b04db81e3cf83cd92c6,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 340
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4520980515991907589, guid: 8bf271c427130b04db81e3cf83cd92c6,
         type: 3}
@@ -4048,7 +4060,7 @@ PrefabInstance:
     - target: {fileID: 7092152104881539869, guid: 559c11d47e063bc4991c465e37cd193d,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 340
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7092152104881539869, guid: 559c11d47e063bc4991c465e37cd193d,
         type: 3}
@@ -4078,7 +4090,7 @@ PrefabInstance:
     - target: {fileID: 7092152104927166074, guid: 559c11d47e063bc4991c465e37cd193d,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 340
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7092152104927166074, guid: 559c11d47e063bc4991c465e37cd193d,
         type: 3}
@@ -4995,6 +5007,7 @@ MonoBehaviour:
     type: 3}
   moneyValue: {fileID: 1376272173}
   populationValue: {fileID: 1794874709}
+  temperatureValue: {fileID: 807072859}
   structurePanelHelper: {fileID: 162381037}
 --- !u!4 &1976479582
 Transform:

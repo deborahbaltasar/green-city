@@ -7,17 +7,26 @@ public class ResourceManager : MonoBehaviour, IResourceManager
 {
     [SerializeField]
     private int startMoneyAmount = 5000;
+
     [SerializeField]
     private int demolitionPrice = 20;
+
     [SerializeField]
     private float moneyCalculationInterval = 2;
     MoneyHelper moneyHelper;
     PopulationHelper populationHelper;
     private BuildingManager buildingManger;
     public UiController uiController;
+    private TemperatureManager temperatureManager;
 
-    public int StartMoneyAmount { get => startMoneyAmount;}
-    public float MoneyCalculationInterval { get => moneyCalculationInterval;}
+    public int StartMoneyAmount
+    {
+        get => startMoneyAmount;
+    }
+    public float MoneyCalculationInterval
+    {
+        get => moneyCalculationInterval;
+    }
 
     public int DemolitionPrice => demolitionPrice;
 
@@ -26,13 +35,14 @@ public class ResourceManager : MonoBehaviour, IResourceManager
     {
         moneyHelper = new MoneyHelper(startMoneyAmount);
         populationHelper = new PopulationHelper();
+        temperatureManager = new TemperatureManager(32.0f);
         UpdateUI();
     }
 
     public void PrepareResourceManager(BuildingManager buildingManager)
     {
         this.buildingManger = buildingManager;
-        InvokeRepeating("CalculateTownIncome",0,MoneyCalculationInterval);
+        InvokeRepeating("CalculateTownIncome", 0, MoneyCalculationInterval);
     }
 
     public bool SpendMoney(int amount)
@@ -47,7 +57,6 @@ public class ResourceManager : MonoBehaviour, IResourceManager
             }
             catch (MoneyException)
             {
-
                 ReloadGame();
             }
         }
@@ -66,6 +75,8 @@ public class ResourceManager : MonoBehaviour, IResourceManager
 
     public void CalculateTownIncome()
     {
+        ApplyTemperatureEffects();
+
         try
         {
             moneyHelper.CalculateMoney(buildingManger.GetAllStructures());
@@ -79,7 +90,7 @@ public class ResourceManager : MonoBehaviour, IResourceManager
 
     private void OnDisable()
     {
-        CancelInvoke();  
+        CancelInvoke();
     }
 
     public void AddMoney(int amount)
@@ -92,12 +103,29 @@ public class ResourceManager : MonoBehaviour, IResourceManager
     {
         uiController.SetMoneyValue(moneyHelper.Money);
         uiController.SetPopulationValue(populationHelper.Population);
+        uiController.SetTemperatureValue(temperatureManager.CurrentTemperature);
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() { }
 
+    private void ApplyTemperatureEffects()
+    {
+        float newTemperature = 32.0f;
+
+        foreach (var structure in buildingManger.GetAllStructures())
+        {
+            float tempEffect = temperatureManager.CalculateTemperatureEffect(structure);
+            int adjustedIncome = (int)(structure.GetIncome() * tempEffect);
+
+            newTemperature += tempEffect;
+            structure.SetIncome(adjustedIncome);
+        }
+        temperatureManager.SetTemperature(newTemperature);
+        if (newTemperature > 50.0f)
+        {
+            ReloadGame();
+        }
     }
 
     public int HowManyStructuresCanIPlace(int placementCost, int numberOfStructures)
@@ -116,6 +144,5 @@ public class ResourceManager : MonoBehaviour, IResourceManager
     {
         populationHelper.ReducePopulation(value);
         UpdateUI();
-
     }
 }

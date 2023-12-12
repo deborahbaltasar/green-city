@@ -34,6 +34,7 @@ public class UiController : MonoBehaviour
 
     public TextMeshProUGUI moneyValue;
     public TextMeshProUGUI populationValue;
+    public TextMeshProUGUI temperatureValue;
 
     public UIStructureInfoPanelHelper structurePanelHelper;
 
@@ -48,7 +49,6 @@ public class UiController : MonoBehaviour
         openBuildMenuBtn.onClick.AddListener(OnOpenBuildMenu);
         demolishBtn.onClick.AddListener(OnDemolishHandler);
         closeBuildMenuBtn.onClick.AddListener(OnCloseMenuHandler);
-
     }
 
     public void HideStructureInfo()
@@ -58,18 +58,14 @@ public class UiController : MonoBehaviour
 
     public bool GetStructureInfoVisibility()
     {
-
         return structurePanelHelper.gameObject.activeSelf;
     }
 
     private void OnConfirmActionCallback()
     {
-
         cancleActionPanel.SetActive(false);
         OnConfirmActionHandler?.Invoke();
     }
-
-
 
     private void OnCloseMenuHandler()
     {
@@ -89,15 +85,27 @@ public class UiController : MonoBehaviour
     {
         AudioManager.Instance.PlayButtonClickedSound();
         buildingMenuPanel.SetActive(true);
-        
+
         PrepareBuildMenu();
     }
 
     private void PrepareBuildMenu()
     {
-        CreateButtonsInPanel(zonesPanel.transform, structureRepository.GetZoneNames(),OnBuildAreaCallback);
-        CreateButtonsInPanel(facilitiesPanel.transform, structureRepository.GetSingleStructureNames(),OnBuildSingleStructureCallback);
-        CreateButtonsInPanel(roadsPanel.transform, new List<string>() { structureRepository.GetRoadStructureName() },OnBuildRoadCallback);
+        CreateButtonsInPanel(
+            zonesPanel.transform,
+            structureRepository.GetZoneNames(),
+            OnBuildAreaCallback
+        );
+        CreateButtonsInPanel(
+            facilitiesPanel.transform,
+            structureRepository.GetSingleStructureNames(),
+            OnBuildSingleStructureCallback
+        );
+        CreateButtonsInPanel(
+            roadsPanel.transform,
+            new List<string>() { structureRepository.GetRoadStructureName() },
+            OnBuildRoadCallback
+        );
     }
 
     public void SetPopulationValue(int population)
@@ -105,7 +113,16 @@ public class UiController : MonoBehaviour
         populationValue.text = population + "";
     }
 
-    private void CreateButtonsInPanel(Transform panelTransform, List<string> dataToShow, Action<string> callback)
+    public void SetTemperatureValue(float temperature)
+    {
+        temperatureValue.text = temperature.ToString("0.0") + "°C";
+    }
+
+    private void CreateButtonsInPanel(
+        Transform panelTransform,
+        List<string> dataToShow,
+        Action<string> callback
+    )
     {
         if (dataToShow.Count > panelTransform.childCount)
         {
@@ -121,7 +138,11 @@ public class UiController : MonoBehaviour
             if (button != null)
             {
                 button.GetComponentInChildren<TextMeshProUGUI>().text = dataToShow[i];
-                button.onClick.AddListener(()=> callback(button.GetComponentInChildren<TextMeshProUGUI>().text));
+                button
+                    .onClick
+                    .AddListener(
+                        () => callback(button.GetComponentInChildren<TextMeshProUGUI>().text)
+                    );
             }
         }
     }
@@ -132,10 +153,7 @@ public class UiController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    void Update() { }
 
     public void DisplayBasicStructureInfo(StructureBaseSO data)
     {

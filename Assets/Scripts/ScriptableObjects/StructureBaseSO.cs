@@ -9,23 +9,39 @@ public abstract class StructureBaseSO : ScriptableObject
     public GameObject prefab;
     public int placementCost;
     public int upkeepCost;
+
     [SerializeField]
     protected int income;
     public bool requireRoadAccess;
     public bool requireWater;
     public bool requirePower;
     public int structureRange = 1;
+    public float temperatureEffect = 0.5f;
     private SingleFacilitySO powerProvider = null;
     private SingleFacilitySO waterProvider = null;
     private RoadStructureSO roadProvider = null;
 
-    public SingleFacilitySO PowerProvider { get => powerProvider;}
-    public SingleFacilitySO WaterProvider { get => waterProvider;}
-    public RoadStructureSO RoadProvider { get => roadProvider;}
+    public SingleFacilitySO PowerProvider
+    {
+        get => powerProvider;
+    }
+    public SingleFacilitySO WaterProvider
+    {
+        get => waterProvider;
+    }
+    public RoadStructureSO RoadProvider
+    {
+        get => roadProvider;
+    }
 
     public virtual int GetIncome()
     {
         return income;
+    }
+
+    public virtual void SetIncome(int newIncome)
+    {
+        income = newIncome;
     }
 
     public bool HasPower()
@@ -55,7 +71,7 @@ public abstract class StructureBaseSO : ScriptableObject
 
     public void AddPowerFacility(SingleFacilitySO facility)
     {
-        if (powerProvider==null)
+        if (powerProvider == null)
             powerProvider = facility;
     }
 
@@ -67,25 +83,23 @@ public abstract class StructureBaseSO : ScriptableObject
             waterProvider.RemoveClient(this);
         return null;
     }
+
     public void AddWaterFacility(SingleFacilitySO facility)
     {
-        if (waterProvider==null)
+        if (waterProvider == null)
             powerProvider = facility;
     }
 
     public void RemovePowerFacility()
     {
-
         powerProvider = null;
-
-
     }
+
     public void RemoveWaterFacility()
     {
-
         waterProvider = null;
-
     }
+
     private void AddRoadProvider(IEnumerable<StructureBaseSO> structures)
     {
         if (roadProvider != null)
